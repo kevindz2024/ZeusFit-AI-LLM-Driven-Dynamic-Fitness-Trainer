@@ -11,10 +11,13 @@ from routes.workout import workout_bp
 from routes.diet import diet_bp
 from routes.chatbot import chatbot_bp
 from routes.progress import progress_bp
+from routes.planner import planner_bp
 
 
 def create_app():
-    load_dotenv()
+    # Always load backend/.env regardless of where Flask is started from.
+    env_path = os.path.join(os.path.dirname(__file__), ".env")
+    load_dotenv(dotenv_path=env_path)
 
     app = Flask(__name__)
 
@@ -32,10 +35,23 @@ def create_app():
     app.register_blueprint(diet_bp)
     app.register_blueprint(chatbot_bp)
     app.register_blueprint(progress_bp)
+    app.register_blueprint(planner_bp)
 
     @app.get("/api/health")
     def health():
         return jsonify({"status": "ok"})
+
+    @app.get("/api/debug/gemini")
+    def debug_gemini():
+        # Safe diagnostics: does NOT return the full key.
+        key = os.getenv("GEMINI_API_KEY") or ""
+        return jsonify(
+            {
+                "has_key": bool(key),
+                "key_length": len(key),
+                "key_last4": key[-4:] if len(key) >= 4 else key,
+            }
+        )
 
     with app.app_context():
         db.create_all()

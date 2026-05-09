@@ -31,6 +31,9 @@ export default function Navbar() {
           <NavLink to="/diet" className={navItemClass}>
             Diet
           </NavLink>
+          <NavLink to="/planner" className={navItemClass}>
+            Planner
+          </NavLink>
           <NavLink to="/chatbot" className={navItemClass}>
             Chatbot
           </NavLink>

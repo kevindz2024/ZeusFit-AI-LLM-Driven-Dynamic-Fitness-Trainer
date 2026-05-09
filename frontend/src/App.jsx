@@ -10,6 +10,7 @@ import Dashboard from './pages/Dashboard'
 import Workout from './pages/Workout'
 import Diet from './pages/Diet'
 import Chatbot from './pages/Chatbot'
+import Planner from './pages/Planner'
 
 export default function App() {
   return (
@@ -50,6 +51,14 @@ export default function App() {
             element={
               <ProtectedRoute>
                 <Chatbot />
+              </ProtectedRoute>
+            }
+          />
+          <Route
+            path="/planner"
+            element={
+              <ProtectedRoute>
+                <Planner />
               </ProtectedRoute>
             }
           />

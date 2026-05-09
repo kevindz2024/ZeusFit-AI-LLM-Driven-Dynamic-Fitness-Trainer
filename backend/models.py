@@ -52,6 +52,33 @@ class WorkoutPlan(db.Model):
     created_at = db.Column(db.DateTime, default=datetime.utcnow, nullable=False)
 
 
+class WorkoutProfile(db.Model):
+    """
+    Lightweight profile settings used by the workout planner UI.
+    Stored in a separate table to avoid needing migrations for the existing User model.
+    """
+
+    __tablename__ = "workout_profiles"
+
+    id = db.Column(db.Integer, primary_key=True)
+    user_id = db.Column(db.Integer, db.ForeignKey("users.id"), nullable=False, unique=True, index=True)
+    weekly_split_json = db.Column(db.Text, nullable=False, default="{}")
+    updated_at = db.Column(db.DateTime, default=datetime.utcnow, nullable=False)
+
+
+class PlannerExerciseProgress(db.Model):
+    __tablename__ = "planner_exercise_progress"
+
+    id = db.Column(db.Integer, primary_key=True)
+    user_id = db.Column(db.Integer, db.ForeignKey("users.id"), nullable=False, index=True)
+    day = db.Column(db.String(20), nullable=False, index=True)  # "monday"..."sunday"
+    exercise_id = db.Column(db.String(80), nullable=False)  # stable id from the generated plan
+    completed = db.Column(db.Boolean, nullable=False, default=False)
+    updated_at = db.Column(db.DateTime, default=datetime.utcnow, nullable=False)
+
+    __table_args__ = (db.UniqueConstraint("user_id", "day", "exercise_id", name="uq_user_day_exercise"),)
+
+
 class DietPlan(db.Model):
     __tablename__ = "diet_plans"
 
